@@ -1,3 +1,5 @@
+import javax.swing.*;
+
 public class Account {
     protected String name;
     protected String password;
@@ -26,3 +28,4 @@ public class Account {
         return true;
     }
 }
+
