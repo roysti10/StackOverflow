@@ -125,7 +125,7 @@ public class showAccountView extends JFrame implements ActionListener {
         resetPassword.setLayout(null);
         resetPassword.setSize(400, 400);
         resetPassword.setVisible(true);
-        resetPassword.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        resetPassword.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         resetPassword.setResizable(false);
         resetPassword.setLocationRelativeTo(null);
         newPasswordLabel.setBounds(50, 50, 100, 30);
@@ -162,7 +162,7 @@ public class showAccountView extends JFrame implements ActionListener {
         updateDetails.setLayout(null);
         updateDetails.setSize(400, 400);
         updateDetails.setVisible(true);
-        updateDetails.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        updateDetails.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         updateDetails.setResizable(false);
         updateDetails.setLocationRelativeTo(null);
         newEmailLabel.setBounds(50, 50, 100, 30);
