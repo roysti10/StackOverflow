@@ -3,7 +3,8 @@ public class view {
         Account theModel = new Account("John", "password", "john@123.com", 12345678);
         Member member = new Member("John", "password", "john@123.com", 12345678);
         // showAccountView theView = new showAccountView(member);
-        registrationView view = new registrationView();
+        // registrationView view = new registrationView();
+        homeView view = new homeView();
         // theView.setVisible(true);
     }
 }

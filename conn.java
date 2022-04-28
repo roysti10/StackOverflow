@@ -12,7 +12,7 @@ public class conn
 			Class.forName("org.postgresql.Driver");
 			c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/stackoverflow", "postgres", "postgres");
 			stmt = c.createStatement();
-            System.out.println("COnnected");
+            System.out.println("Connected");
 		}
 		catch (Exception e)
 		{

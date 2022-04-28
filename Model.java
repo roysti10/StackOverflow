@@ -38,7 +38,7 @@ public class Model {
 	public boolean resetPassword(String name, String password) {
 		try {
 			conn c1 = new conn();
-			ResultSet rs = c1.stmt
+			c1.stmt
 					.executeQuery("UPDATE Account SET password = '" + password + "' WHERE name= '" + name + "';");
 
 			return true;

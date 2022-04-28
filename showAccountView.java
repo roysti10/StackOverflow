@@ -26,8 +26,7 @@ public class showAccountView extends JFrame implements ActionListener {
     JScrollPane scroll = new JScrollPane (textArea, 
    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
- 
- 
+
     showAccountView(Member account) {
         setLayoutManager();
         setLocationAndSize();
@@ -110,8 +109,6 @@ public class showAccountView extends JFrame implements ActionListener {
             } else {
                 passwordField.setEchoChar('*');
             }
- 
- 
         }
     }
 
