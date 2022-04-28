@@ -1,11 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
  
 public class showAccountView extends JFrame implements ActionListener {
  
     Container container = getContentPane();
+    JLabel label = new JLabel("MEMBER DETAILS");
     JLabel userLabel = new JLabel("USERNAME");
     JLabel passwordLabel = new JLabel("PASSWORD");
     JLabel emailLabel = new JLabel("EMAIL");
@@ -17,12 +19,12 @@ public class showAccountView extends JFrame implements ActionListener {
     JLabel phoneTextField = new JLabel();
     JLabel reputationsTextField = new JLabel();
     JButton updateButton = new JButton("UPDATE");
-    JButton resetButton = new JButton("RESET PASSWORD");
+    JButton resetButton = new JButton("RESET");
     JCheckBox showPassword = new JCheckBox("Show Password");
 
     JButton backButton = new JButton("BACK");
     JLabel questionLabel = new JLabel("YOUR QUESTIONS");
-    JTextArea textArea = new JTextArea("TEST");
+    JTextArea textArea = new JTextArea();
     JScrollPane scroll = new JScrollPane (textArea, 
    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -37,6 +39,7 @@ public class showAccountView extends JFrame implements ActionListener {
         setBounds(10, 10, 1100, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        populateQuestion();
         userTextField.setText(account.name);
         passwordField.setText(account.password);
         emailTextField.setText(account.email);
@@ -52,6 +55,10 @@ public class showAccountView extends JFrame implements ActionListener {
     }
  
     public void setLocationAndSize() {
+        label.setFont(new Font("Serif", Font.BOLD, 28));
+        label.setForeground(new java.awt.Color(41,86,143));
+
+        label.setBounds(400,30,300,50);
         userLabel.setBounds(50, 150, 100, 30);
         passwordLabel.setBounds(50, 220, 100, 30);
         emailLabel.setBounds(50, 290, 100, 30);
@@ -70,6 +77,7 @@ public class showAccountView extends JFrame implements ActionListener {
     }
  
     public void addComponentsToContainer() {
+        container.add(label);
         container.add(userLabel);
         container.add(passwordLabel);
         container.add(emailLabel);
@@ -91,6 +99,18 @@ public class showAccountView extends JFrame implements ActionListener {
         updateButton.addActionListener(this);
         resetButton.addActionListener(this);
         showPassword.addActionListener(this);
+    }
+
+    public void populateQuestion() {
+        Model m = new Model();
+
+        ArrayList<Question> questions = new ArrayList<Question>();
+
+        for (int i = 0; i < questions.size(); i++) {
+
+            textArea.append(i + " " + questions.get(i).title + "\n");
+
+        }
     }
  
  

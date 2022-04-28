@@ -47,7 +47,7 @@ public class Model {
 		
 		//List<List<String>> fetchedQuestions = new ArrayList<List<String>>();
 
-		ArrayList<Question> listOfQuestion = new ArrayList<Question>;
+		ArrayList<Question> listOfQuestion = new ArrayList<Question>();
 		try {
 			
 			conn c1 = new conn();
@@ -154,7 +154,6 @@ public class Model {
 		m.registerUser("Rohan", "123", "rohanm@gmail.com", "ACTIVE", 47364536, 10, 0);
 		m.updateDetails("abcd@gmail.com",489489489,"Rohan");
 	}
-}
 
 
 public boolean createQuestion(String name,String password, String email , String accStatus ,int phone,int id,int reputation)

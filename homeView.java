@@ -15,7 +15,7 @@ public class homeView extends JFrame implements ActionListener {
     JScrollPane scroll = new JScrollPane(pnl, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     JButton membverView = new JButton("MEMBER");
 
-    homeView(){
+    homeView(Member member){
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -26,6 +26,7 @@ public class homeView extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         populateQuestion();
+        Member m1 = member;
     }
 
     public void setLayoutManager() {
@@ -50,6 +51,8 @@ public class homeView extends JFrame implements ActionListener {
     }
 
     public void populateQuestion() {
+        Model m = new Model();
+        // ArrayList<Question> questions = m.getQuestions();
         ArrayList<Question> questions = new ArrayList<Question>();
 
         
@@ -91,7 +94,10 @@ public class homeView extends JFrame implements ActionListener {
 
         if (e.getSource() == membverView) {
             // new memberView();
-            System.out.println("Member View");
+            // System.out.println("Member View");
+            setVisible(false);
+            dispose();
+            showAccountView();
         }
         
     }
