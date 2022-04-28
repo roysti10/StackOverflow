@@ -24,3 +24,8 @@ alter table Answer alter column flagCount set default 0;
 alter table Question alter column voteCount set default 0;
 alter table Question alter column flagCount set default 0;
 
+alter table Question add constraint titlepk primary key (title);
+alter table Answer add column qtitle varchar;
+alter table Answer add constraint qtfk foreign key (qtitle)  references Question (title);
+
+
