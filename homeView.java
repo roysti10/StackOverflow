@@ -20,7 +20,10 @@ public class homeView extends JFrame implements ActionListener {
     JScrollPane scroll = new JScrollPane(pnl, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     JButton membverView = new JButton("MEMBER");
     JButton createQuestion = new JButton("Create question");
+    JButton logout = new JButton("LOGOUT");
+    JButton listMembers = new JButton("LIST MEMBERS");
     homeView(Member member){
+        m1 = member;
         setLayoutManager();
         setLocationAndSize();
         populateQuestion();
@@ -31,7 +34,6 @@ public class homeView extends JFrame implements ActionListener {
         setBounds(10, 10, 1100, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-        m1 = member;
     }
 
     public void setLayoutManager() {
@@ -47,6 +49,9 @@ public class homeView extends JFrame implements ActionListener {
         scroll.setBounds(50, 150, 1000, 800);
         membverView.setBounds(950, 50, 100, 50);
         createQuestion.setBounds(50,50, 200, 50);
+        logout.setBounds(850, 50, 100,50);
+        listMembers.setBounds(150, 150, 100, 50);
+        
     }
 
     public void addComponentsToContainer() {
@@ -54,6 +59,10 @@ public class homeView extends JFrame implements ActionListener {
         container.add(scroll);
         container.add(membverView);
         container.add(createQuestion);
+        container.add(logout);
+        if(m1.isAdmin || m1.isModerator){
+            container.add(listMembers);
+        }
     }
 
     public void populateQuestion() {
@@ -72,21 +81,21 @@ public class homeView extends JFrame implements ActionListener {
             JLabel questionLabel = new JLabel(questions.get(i).title);
             Question qs = questions.get(i);
             questionLabel.setFont(new Font("Serif", Font.BOLD, 20));
-            questionLabel.setBounds(100,(i+1)*200,100,30);
+            questionLabel.setBounds(150,(i+2)*100,100,30);
             container.add(questionLabel);
 
             JLabel questionDes = new JLabel(questions.get(i).description);
             // questionDes.setFont(new Font("Serif", Font.BOLD, 20));
-            questionDes.setBounds(100,(i+1)*200 + 50,100,30);
+            questionDes.setBounds(150,(i+2)*100 + 50,100,30);
             container.add(questionDes);
 
-            JLabel questionVote = new JLabel(Integer.toString(questions.get(i).voteCount)+" votes");
-            questionVote.setBounds(50,(i+1)*200+5,50,30);
+            JLabel questionVote = new JLabel(Integer.toString(questions.get(i).voteCount)+"\r\r\n votes");
+            questionVote.setBounds(70,(i+2)*100,80,60);
             container.add(questionVote);
 
             JButton button = new JButton("View Question");
-            button.setBounds(800,(i+1)*200+5,50,30);
-            pnl.add(button);
+            button.setBounds(800,(i+2)*100+5,150,30);
+            container.add(button);
 
             button.addActionListener(new ActionListener(){
               @Override
@@ -103,6 +112,9 @@ public class homeView extends JFrame implements ActionListener {
         membverView.addActionListener(this);
     //     resetButton.addActionListener(this);
     createQuestion.addActionListener(this);
+
+    logout.addActionListener(this);
+    listMembers.addActionListener(this);
     //     showPassword.addActionListener(this);
     }
 
@@ -119,13 +131,23 @@ public class homeView extends JFrame implements ActionListener {
             sav.setVisible(true);
         }
         if(e.getSource()==createQuestion){
-          createQuestionView cqv = new createQuestionView(new Question("", ""));
+          createQuestionView cqv = new createQuestionView(new Question("", ""), m1);
         }
-
+        if(e.getSource()==logout){
+          this.setVisible(false);
+          this.dispose();
+          try{
+            this.logout();
+          }
+          catch(Exception err){
+            System.err.println(err);
+          }
+            new registrationView();
+        }
     }
 
     public ArrayList<Question> add_questions(ArrayList<Question> questions) throws Exception {
-      String query = "SELECT * FROM Questions;";
+      String query = "SELECT * FROM Question;";
       System.out.println(query);
       try {
           Class.forName("org.postgresql.Driver");
@@ -146,7 +168,12 @@ public class homeView extends JFrame implements ActionListener {
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
-            questions.add(new Question(rs.getString("title"), rs.getString("description"), rs.getInt("vote_count")));
+            
+            Question q  = new Question(rs.getString("title"), rs.getString("description"), rs.getInt("voteCount"));
+            System.out.print(q.title);
+            q.questionid = rs.getString("questionid");
+            q.memid = rs.getString("memid");
+            questions.add(q);
           }
           rs.close();
           statement.close();
@@ -158,4 +185,27 @@ public class homeView extends JFrame implements ActionListener {
       }
 
     }
+
+    public void logout() throws Exception{
+      String query = "delete from currentmemid;";
+      System.out.println(query);
+      try {
+          Class.forName("org.postgresql.Driver");
+      }
+      catch (ClassNotFoundException e) {
+          System.err.println (e);
+          System.exit (-1);
+      }
+      try {
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+        connection.setAutoCommit(false);
+        Statement statement = connection.createStatement ();
+        statement.executeUpdate(query);
+        statement.close();
+        connection.close();
+      }
+      catch(Exception e){
+        throw e;
+      }
+}
 }

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 enum QuestionStatus{
-  Open, Closed, OnHold, Delete
+  Open, Closed
 }
 
 enum QuestionClosingRemark{
@@ -27,6 +27,7 @@ class Question{
   ArrayList<Comment> comments;
   ArrayList<Answer> answers;
   ArrayList<Tag> tags;
+  String memid;
 
   Question(String title, String description){
     questionid = UUID.randomUUID().toString();

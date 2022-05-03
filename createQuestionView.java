@@ -20,10 +20,11 @@ public class createQuestionView extends JFrame implements ActionListener {
     JTextArea descriptionTextField= new JTextArea();
     JButton PostButton = new JButton("Post your question");
     JScrollPane scroll = new JScrollPane (descriptionTextField,
-   JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-    createQuestionView(Question question) {
+    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    Member member;
+    createQuestionView(Question question, Member m) {
         this.question = question;
+        this.member = m;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -80,6 +81,7 @@ public class createQuestionView extends JFrame implements ActionListener {
           try{
             this.question.title = titleTextField.getText();
             this.question.description = descriptionTextField.getText();
+            this.question.memid = member.memid;
             updatequestion();
           }
           catch(Exception ex){
@@ -94,8 +96,7 @@ public class createQuestionView extends JFrame implements ActionListener {
 
 
     public void updatequestion() throws Exception {
-      String query = "INSERT INTO QUESTIONS VALUES (\'"+this.question.questionid + "\',\'" + this.question.title +"\',\'"+this.question.description+"\'," + this.question.voteCount+");";
-      System.out.println(query);
+      String query = "INSERT INTO QUESTION VALUES (\'"+this.question.questionid + "\',\'" + this.question.title +"\',\'"+this.question.description+"\'," + this.question.voteCount+",\'" + this.member.memid + "\');";
       try {
           Class.forName("org.postgresql.Driver");
       }
