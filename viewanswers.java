@@ -4,9 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class viewanswers extends JFrame implements ActionListener{
     Container container = getContentPane();
@@ -28,7 +26,7 @@ public class viewanswers extends JFrame implements ActionListener{
         setLocationAndSize();
         setTitle("View answers");
         setVisible(true);
-        setBounds(10, 10, 1100, 1000);
+        setBounds(10, 10, 600, 1000);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setResizable(true);
         setLocationRelativeTo(null);
@@ -51,16 +49,16 @@ public class viewanswers extends JFrame implements ActionListener{
         container.add(label);
         for(int i=0;i<question.answers.size();i++){
             System.out.println(question.answers.get(i).answer_text);
-            JLabel comment = new JLabel(question.answers.get(i).answer_text);
-            comment.setBounds(200,100,200,30);
-            container.add(comment);
+            JLabel answer = new JLabel(question.answers.get(i).answer_text);
+            answer.setBounds(100,100 * i +100,300,30);
+            container.add(answer);
             JLabel vote = new JLabel(Integer.toString(question.answers.get(i).voteCount));
-            vote.setBounds(250,200,50,30);
+            vote.setBounds(250,(100 * i + 130),50,30);
             container.add(vote);
     
             Answer ans = question.answers.get(i);
             button = new JButton("UPVOTE");
-            button.setBounds(100,300,100,30);
+            button.setBounds(100,100 * i + 160,100,30);
             button.addActionListener(new ActionListener(){
               @Override
               public void actionPerformed(ActionEvent e){
@@ -79,7 +77,7 @@ public class viewanswers extends JFrame implements ActionListener{
             container.add(button);
     
             button = new JButton("DOWNVOTE");
-            button.setBounds(300,300,150,30);
+            button.setBounds(300,100 * i + 160,150,30);
             button.addActionListener(new ActionListener(){
               @Override
               public void actionPerformed(ActionEvent e){
@@ -113,12 +111,7 @@ public class viewanswers extends JFrame implements ActionListener{
         }
         try {
             Connection connection = DriverManager.getConnection(
-                       //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
             this.connectionLink, this.user, this.pass);
-  
-                       // build query, here we get info about all databases"
-  
-                       // execute query
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);

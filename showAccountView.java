@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -6,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class showAccountView extends JFrame implements ActionListener {
 
@@ -22,17 +22,17 @@ public class showAccountView extends JFrame implements ActionListener {
     JLabel phoneTextField = new JLabel();
     JLabel reputationsTextField = new JLabel();
     JButton updateButton = new JButton("UPDATE");
-    JButton resetButton = new JButton("RESET PASSWORD");
+    JButton resetButton = new JButton("RESET");
     JCheckBox showPassword = new JCheckBox("Show Password");
     String connectionLink;
     String user;
     String pass;
     JButton backButton = new JButton("BACK");
     Member mem;
-   //  JLabel questionLabel = new JLabel("YOUR QUESTIONS");
-   //  JTextArea textArea = new JTextArea("TEST");
-   //  JScrollPane scroll = new JScrollPane (textArea,
-   // JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    JLabel questionLabel = new JLabel("YOUR QUESTIONS");
+    // JTextArea textArea = new JTextArea("TEST");
+    // JScrollPane scroll = new JScrollPane (textArea,
+//    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
 
@@ -44,9 +44,10 @@ public class showAccountView extends JFrame implements ActionListener {
         setLocationAndSize();
         addComponentsToContainer();
         addActionEvent();
+        populateQuestion();
         setTitle("Account Information");
         setVisible(true);
-        setBounds(10, 10, 500, 1000);
+        setBounds(10, 10, 1100, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         userTextField.setText(account.name);
@@ -66,6 +67,7 @@ public class showAccountView extends JFrame implements ActionListener {
     }
 
     public void setLocationAndSize() {
+        questionLabel.setFont(new Font("Serif", Font.BOLD, 28));
         userLabel.setBounds(50, 150, 100, 30);
         passwordLabel.setBounds(50, 220, 100, 30);
         emailLabel.setBounds(50, 290, 100, 30);
@@ -79,8 +81,8 @@ public class showAccountView extends JFrame implements ActionListener {
         showPassword.setBounds(150, 500, 150, 30);
         updateButton.setBounds(50, 600, 100, 30);
         resetButton.setBounds(200, 600, 100, 30);
-        backButton.setBounds(350,100,100,30);
-        // questionLabel.setBounds(500, 100, 150, 30);
+        backButton.setBounds(50,50,100,30);
+        questionLabel.setBounds(600, 100,500, 30);
         // scroll.setBounds(500, 150, 500, 800);
     }
 
@@ -99,8 +101,49 @@ public class showAccountView extends JFrame implements ActionListener {
         container.add(updateButton);
         container.add(resetButton);
         container.add(backButton);
-        // container.add(questionLabel);
+        container.add(questionLabel);
         // container.add(scroll);
+    }
+
+    public void populateQuestion() {
+        ArrayList<Question> questions = new ArrayList<Question>();
+        try{
+          questions = add_questions(questions);
+        }
+        catch(Exception err){
+          System.err.println(err);
+        }
+
+
+        for (int i = 0; i < questions.size(); i++) {
+            System.out.println("Hi!");
+            System.out.print(questions.get(i).title);
+            JLabel questionLabel = new JLabel(questions.get(i).title);
+            Question qs = questions.get(i);
+            questionLabel.setFont(new Font("Serif", Font.BOLD, 20));
+            questionLabel.setBounds(550,(i+2)*100,400,30);
+            container.add(questionLabel);
+
+            JLabel questionDes = new JLabel(questions.get(i).description);
+            // questionDes.setFont(new Font("Serif", Font.BOLD, 20));
+            questionDes.setBounds(550,(i+2)*100 + 50,400,30);
+            container.add(questionDes);
+
+            
+
+            JButton button = new JButton("View Question");
+            button.setBounds(900,(i+2)*100+5,150,30);
+            container.add(button);
+
+            button.addActionListener(new ActionListener(){
+              @Override
+              public void actionPerformed(ActionEvent e){
+                dispose();
+                new showyourquestionView(qs, connectionLink, user, pass);
+                
+              }
+            });
+        }
     }
 
     public void addActionEvent() {
@@ -210,5 +253,41 @@ public class showAccountView extends JFrame implements ActionListener {
         });
 
     }
+
+    public ArrayList<Question> add_questions(ArrayList<Question> questions) throws Exception {
+        String query = "SELECT * FROM Question;";
+        //  WHERE memid=\'" + mem.memid + "\';";
+        System.out.println(query);
+        try {
+            Class.forName("org.postgresql.Driver");
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println (e);
+            System.exit (-1);
+        }
+        try {
+            Connection connection = DriverManager.getConnection(
+            this.connectionLink, this.user, this.pass);
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement ();
+            ResultSet rs = statement.executeQuery(query);
+            while(rs.next()){
+              
+              Question q  = new Question(rs.getString("title"), rs.getString("description"), rs.getInt("voteCount"));
+              System.out.print(q.title);
+              q.questionid = rs.getString("questionid");
+              q.memid = rs.getString("memid");
+              questions.add(q);
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return questions;
+        }
+        catch(Exception e){
+            throw e;
+        }
+  
+      }
 
 }

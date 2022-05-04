@@ -6,20 +6,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class showyourquestionView extends JFrame implements ActionListener {
 
     Container container = getContentPane();
     JLabel label = new JLabel("STACKOVERLOW");
     Question question;
-    JLabel Label_title = new JLabel("View question");
+    JLabel Label_title = new JLabel("VIEW QUESTION");
     JLabel title = new JLabel("Title");
     JLabel descriptionLabel = new JLabel("Description");
     JLabel titleField;
     JTextArea descriptionField;
     JLabel name = new JLabel("Question posted by");
     JLabel nameField;
+    JLabel vote = new JLabel("Votes");
+    JLabel voteField;
     String connectionLink;
     String user;
     String pass;
@@ -58,6 +59,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
         descriptionField = new JTextArea(this.question.description);
         scroll = new JScrollPane (descriptionField, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         nameField = new JLabel(m.name);
+        voteField = new JLabel(Integer.toString(this.question.voteCount));
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -83,24 +85,30 @@ public class showyourquestionView extends JFrame implements ActionListener {
         Label_title.setForeground(new java.awt.Color(41,86,143));
         name.setFont(new Font("Serif", Font.BOLD, 24));
         title.setFont(new Font("Serif", Font.BOLD, 22));
+        nameField.setFont(new Font("Serif", Font.BOLD, 22));
+        titleField.setFont(new Font("Serif", Font.BOLD, 22));
+        vote.setFont(new Font("Serif", Font.BOLD, 22));
+        voteField.setFont(new Font("Serif", Font.BOLD, 22));
         descriptionLabel.setFont(new Font("Serif", Font.BOLD, 22));
 
-        label.setBounds(450,30,700,100);
-        logoutButton.setBounds(900, 30, 150, 30);
-        Label_title.setBounds(450,120,500,50);
+        label.setBounds(350,30,500,100);
+        logoutButton.setBounds(900, 10, 150, 30);
+        Label_title.setBounds(370,120,500,50);
         name.setBounds(350,200,500,30);
         title.setBounds(350, 250, 100, 30);
-        descriptionLabel.setBounds(500, 320, 700, 30);
+        vote.setBounds(350, 300, 100, 30);
+        descriptionLabel.setBounds(400, 350, 700, 30);
         nameField.setBounds(550, 200, 500, 30);
         titleField.setBounds(450,250, 750, 30);
-        scroll.setBounds(250, 370, 650, 300);
+        voteField.setBounds(450, 300, 750, 30);
+        scroll.setBounds(250, 400, 550, 400);
         AddAnswerButton.setBounds(50, 500, 150, 30);
         AddCommentButton.setBounds(50, 600, 150, 30);
         ViewAnswers.setBounds(50,10, 150, 30);
         ViewComments.setBounds(50, 60, 150, 30);
         backButton.setBounds(900,60,150,30);
-        upvote.setBounds(750,60,150,30);
-        downvote.setBounds(750, 100, 150, 30);
+        upvote.setBounds(900,500,150,30);
+        downvote.setBounds(900, 600, 150, 30);
     }
 
     public void addComponentsToContainer() {
@@ -117,6 +125,8 @@ public class showyourquestionView extends JFrame implements ActionListener {
         container.add(backButton);
         container.add(name);
         container.add(nameField);
+        container.add(vote);
+        container.add(voteField);
         container.add(upvote);
         container.add(downvote);
         container.add(logoutButton);
@@ -150,6 +160,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       }
       if(e.getSource()==backButton){
         setVisible(false);
+        new homeView(m, connectionLink, user, pass);
       }
       if(e.getSource()==upvote){
         try{
@@ -194,12 +205,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       }
       try {
           Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
           this.connectionLink, this.user, this.pass);
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
           connection.setAutoCommit(false);
           Statement statement = connection.createStatement ();
           statement.executeUpdate(query);
@@ -231,12 +237,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       }
       try {
           Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
           this.connectionLink, this.user, this.pass);
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){

@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class homeView extends JFrame implements ActionListener {
 
@@ -87,12 +86,12 @@ public class homeView extends JFrame implements ActionListener {
             JLabel questionLabel = new JLabel(questions.get(i).title);
             Question qs = questions.get(i);
             questionLabel.setFont(new Font("Serif", Font.BOLD, 20));
-            questionLabel.setBounds(150,(i+2)*100,100,30);
+            questionLabel.setBounds(150,(i+2)*100,800,30);
             container.add(questionLabel);
 
             JLabel questionDes = new JLabel(questions.get(i).description);
             // questionDes.setFont(new Font("Serif", Font.BOLD, 20));
-            questionDes.setBounds(150,(i+2)*100 + 50,100,30);
+            questionDes.setBounds(150,(i+2)*100 + 50,800,30);
             container.add(questionDes);
 
             JLabel questionVote = new JLabel(Integer.toString(questions.get(i).voteCount)+"\r\r\n votes");
@@ -106,8 +105,9 @@ public class homeView extends JFrame implements ActionListener {
             button.addActionListener(new ActionListener(){
               @Override
               public void actionPerformed(ActionEvent e){
-
-                showyourquestionView syqv = new showyourquestionView(qs, connectionLink, user, pass);
+                dispose();
+                new showyourquestionView(qs, connectionLink, user, pass);
+                
               }
             });
         }
@@ -137,7 +137,10 @@ public class homeView extends JFrame implements ActionListener {
             sav.setVisible(true);
         }
         if(e.getSource()==createQuestion){
-          createQuestionView cqv = new createQuestionView(new Question("", ""), m1, connectionLink, user, pass);
+            this.setVisible(false);
+            this.dispose();
+            createQuestionView cqv = new createQuestionView(new Question("", ""), m1, connectionLink, user, pass);
+            cqv.setVisible(true);
         }
         if(e.getSource()==logout){
           this.setVisible(false);
@@ -164,12 +167,7 @@ public class homeView extends JFrame implements ActionListener {
       }
       try {
           Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
           this.connectionLink, this.user, this.pass);
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
           connection.setAutoCommit(false);
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);

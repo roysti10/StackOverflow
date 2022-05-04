@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 import java.util.UUID;
 
 public class registrationView extends JFrame implements ActionListener {
@@ -203,12 +202,7 @@ public class registrationView extends JFrame implements ActionListener {
           }
           try {
               Connection connection = DriverManager.getConnection(
-                         //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
               this.connectionLink, this.user, this.pass);
-
-                         // build query, here we get info about all databases"
-
-                         // execute query
               connection.setAutoCommit(false);
               Statement statement = connection.createStatement ();
               ResultSet set = statement.executeQuery(query2);

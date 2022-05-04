@@ -4,9 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class viewcomments extends JFrame implements ActionListener{
     Container container = getContentPane();
@@ -28,7 +26,7 @@ public class viewcomments extends JFrame implements ActionListener{
         setLocationAndSize();
         setTitle("View comments");
         setVisible(true);
-        setBounds(10, 10, 1100, 1000);
+        setBounds(10, 10, 600, 1000);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setResizable(true);
         setLocationRelativeTo(null);
@@ -45,7 +43,7 @@ public class viewcomments extends JFrame implements ActionListener{
     }
 
     public void setLocationAndSize() {
-        label.setFont(new Font("Serif", Font.BOLD, 28));
+      label.setFont(new Font("Serif", Font.BOLD, 28));
       label.setForeground(new java.awt.Color(255,165,0));
       label.setBounds(200,30,300,50);
       container.add(label);
@@ -54,15 +52,15 @@ public class viewcomments extends JFrame implements ActionListener{
       for(int i=0;i<question.comments.size();i++){
         System.out.println("Hi");
         JLabel comment = new JLabel(question.comments.get(i).text);
-        comment.setBounds(200,100,200,30);
+        comment.setBounds(100,100 * i +100,300,30);
         container.add(comment);
         JLabel vote = new JLabel(Integer.toString(question.comments.get(i).voteCount));
-        vote.setBounds(250,200,50,30);
+        vote.setBounds(250,100 * i + 130,50,30);
         container.add(vote);
 
         Comment ans = question.comments.get(i);
         button = new JButton("UPVOTE");
-        button.setBounds(100,300,100,30);
+        button.setBounds(100,100 * i + 160,100,30);
         button.addActionListener(new ActionListener(){
           @Override
           public void actionPerformed(ActionEvent e){
@@ -81,7 +79,7 @@ public class viewcomments extends JFrame implements ActionListener{
         container.add(button);
 
         button = new JButton("DOWNVOTE");
-        button.setBounds(300,300,150,30);
+        button.setBounds(300,100 * i + 160,150,30);
         button.addActionListener(new ActionListener(){
           @Override
           public void actionPerformed(ActionEvent e){

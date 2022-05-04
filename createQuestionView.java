@@ -4,9 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.SQLException;
 
 public class createQuestionView extends JFrame implements ActionListener {
 
@@ -62,8 +60,8 @@ public class createQuestionView extends JFrame implements ActionListener {
         title.setBounds(150, 250, 100, 30);
         descriptionLabel.setBounds(500, 320, 500, 30);
         titleTextField.setBounds(250,250, 750, 30);
-        scroll.setBounds(150, 370, 850, 500);
-        PostButton.setBounds(500, 500, 150, 30);
+        scroll.setBounds(150, 370, 850, 400);
+        PostButton.setBounds(500, 900, 150, 30);
     }
 
     public void addComponentsToContainer() {
