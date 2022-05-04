@@ -17,13 +17,12 @@ public class addcomments extends JFrame implements ActionListener{
     JTextArea comment_text = new JTextArea();
     // JScrollPane comment_scroll = new JScrollPane (comment_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     JButton postcomment = new JButton("Post Comment");
+    conn connection;
 
-    addcomments(Question question, Member m, String connectionLink, String user, String pass){
+    addcomments(Question question, Member m, conn c1){
         this.question = question;
         this.m = m;
-        this.connectionLink = connectionLink;
-        this.pass = pass;
-        this.user = user;
+        this.connection = c1;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -93,14 +92,11 @@ public class addcomments extends JFrame implements ActionListener{
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-            this.connectionLink, this.user, this.pass);
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);
             statement.close();
-            connection.commit();
-            connection.close();
+            connection.c.commit();
         }
         catch(Exception e){
             throw e;

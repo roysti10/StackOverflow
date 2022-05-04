@@ -15,19 +15,15 @@ public class homeView extends JFrame implements ActionListener {
     JPanel pnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
     JLabel label = new JLabel("STACKOVERFLOW");
     Member m1;
-    String connectionLink;
-    String user;
-    String pass;
+    conn connection;
     JTextArea textArea = new JTextArea();
     JScrollPane scroll = new JScrollPane(pnl, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     JButton membverView = new JButton("MEMBER");
     JButton createQuestion = new JButton("Create question");
     JButton logout = new JButton("LOGOUT");
     JButton listMembers = new JButton("LIST MEMBERS");
-    homeView(Member member, String connectionLink, String user, String pass){
-        this.user = user;
-        this.connectionLink = connectionLink;
-        this.pass = pass;
+    homeView(Member member,conn c1){
+        this.connection = c1;
         m1 = member;
         setLayoutManager();
         setLocationAndSize();
@@ -106,7 +102,7 @@ public class homeView extends JFrame implements ActionListener {
               @Override
               public void actionPerformed(ActionEvent e){
                 dispose();
-                new showyourquestionView(qs, connectionLink, user, pass);
+                new showyourquestionView(qs, connection);
                 
               }
             });
@@ -133,13 +129,13 @@ public class homeView extends JFrame implements ActionListener {
             // System.out.println("Member View");
             setVisible(false);
             dispose();
-            showAccountView sav = new showAccountView(m1, connectionLink, user, pass);
+            showAccountView sav = new showAccountView(m1, connection);
             sav.setVisible(true);
         }
         if(e.getSource()==createQuestion){
             this.setVisible(false);
             this.dispose();
-            createQuestionView cqv = new createQuestionView(new Question("", ""), m1, connectionLink, user, pass);
+            createQuestionView cqv = new createQuestionView(new Question("", ""), m1, connection);
             cqv.setVisible(true);
         }
         if(e.getSource()==logout){
@@ -151,7 +147,7 @@ public class homeView extends JFrame implements ActionListener {
           catch(Exception err){
             System.err.println(err);
           }
-            new registrationView(connectionLink, user, pass);
+            new registrationView(connection);
         }
     }
 
@@ -166,9 +162,7 @@ public class homeView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(
-          this.connectionLink, this.user, this.pass);
-          connection.setAutoCommit(false);
+          connection.c.setAutoCommit(false);
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
@@ -181,7 +175,6 @@ public class homeView extends JFrame implements ActionListener {
           }
           rs.close();
           statement.close();
-          connection.close();
           return questions;
       }
       catch(Exception e){
@@ -201,12 +194,10 @@ public class homeView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-        Connection connection = DriverManager.getConnection(this.connectionLink, this.user, this.pass);
-        connection.setAutoCommit(false);
+        connection.c.setAutoCommit(false);
         Statement statement = connection.createStatement ();
         statement.executeUpdate(query);
         statement.close();
-        connection.close();
       }
       catch(Exception e){
         throw e;

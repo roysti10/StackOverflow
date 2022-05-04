@@ -21,9 +21,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
     JLabel nameField;
     JLabel vote = new JLabel("Votes");
     JLabel voteField;
-    String connectionLink;
-    String user;
-    String pass;
+    conn connection;
     JButton AddAnswerButton = new JButton("Add Answer");
     JButton ViewAnswers = new JButton("View Answers");
     JButton ViewComments = new JButton("View Comments");
@@ -35,12 +33,10 @@ public class showyourquestionView extends JFrame implements ActionListener {
     JScrollPane scroll;
     Member m;
 
-    showyourquestionView(Question question, String connectionLink, String user, String pass) {
+    showyourquestionView(Question question, conn c1) {
 
         this.question = question;
-        this.connectionLink = connectionLink;
-        this.user = user;
-        this.pass = pass;
+        this.connection = c1;
         this.m = null;
         try{
           m = this.getMember();
@@ -147,20 +143,20 @@ public class showyourquestionView extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
       if(e.getSource()== AddAnswerButton){
-        new addanswers(question, m, connectionLink, user, pass);
+        new addanswers(question, m, connection);
       }
       if(e.getSource()==AddCommentButton){
-        new addcomments(question, m, connectionLink, user, pass);
+        new addcomments(question, m, connection);
       }
       if(e.getSource()==ViewAnswers){
-        new viewanswers(question, m, connectionLink, user, pass);
+        new viewanswers(question, m, connection);
       }
       if(e.getSource()==ViewComments){
-        new viewcomments(question, m, connectionLink, user, pass);
+        new viewcomments(question, m, connection);
       }
       if(e.getSource()==backButton){
         setVisible(false);
-        new homeView(m, connectionLink, user, pass);
+        new homeView(m, connection);
       }
       if(e.getSource()==upvote){
         try{
@@ -168,6 +164,8 @@ public class showyourquestionView extends JFrame implements ActionListener {
           updatequestionVote(question,1);
           upvote.setEnabled(false);
           downvote.setEnabled(true);
+          this.dispose();
+          new  showyourquestionView(question, connection);
         }
         catch(Exception err){
           System.err.println(err);
@@ -179,6 +177,8 @@ public class showyourquestionView extends JFrame implements ActionListener {
           updatequestionVote(question, 0);
           upvote.setEnabled(true);
           downvote.setEnabled(false);
+          this.dispose();
+          new showyourquestionView(question, connection);
         }
         catch(Exception err){
           System.err.println(err);
@@ -187,15 +187,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
     }
 
     public void updatequestionVote(Question q, int voteType) throws Exception {
-      String query = "UPDATE question set votecount="+q.voteCount + " where questionid=\'" + q.questionid + "\';";
-      String query2;
-      if(voteType == 1){
-        query2 = "Insert into Vote values(\'"+q.questionid+"\',\'"+q.memid+"\'," + true+");";
-      }
-      else{
-        query2 = "Insert into Vote values(\'"+q.questionid+"\',\'"+q.memid+"\'," + false+");";
-      }
-      System.out.println(query);
+      String query = "UPDATE question set voteCount="+q.voteCount + "where questionid=\'" + q.questionid+"\';";
       try {
           Class.forName("org.postgresql.Driver");
       }
@@ -204,20 +196,13 @@ public class showyourquestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(
-          this.connectionLink, this.user, this.pass);
-          connection.setAutoCommit(false);
+          connection.c.setAutoCommit(false);
           Statement statement = connection.createStatement ();
           statement.executeUpdate(query);
 
-          statement = connection.createStatement();
-          statement.executeUpdate("DELETE FROM Vote WHERE questionid = \'"+q.questionid+"\' and memid=\'" + q.memid + "\';");
-          statement = connection.createStatement();
-          statement.executeUpdate(query2);
-
           statement.close();
-          connection.commit();
-          connection.close();
+          connection.c.commit();
+          
       }
       catch(Exception e){
           throw e;
@@ -236,8 +221,6 @@ public class showyourquestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(
-          this.connectionLink, this.user, this.pass);
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
@@ -245,7 +228,6 @@ public class showyourquestionView extends JFrame implements ActionListener {
           }
           rs.close();
           statement.close();
-          connection.close();
       }
       catch(Exception e){
           throw e;
@@ -264,13 +246,6 @@ public class showyourquestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          this.connectionLink, this.user, this.pass);
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
@@ -278,7 +253,6 @@ public class showyourquestionView extends JFrame implements ActionListener {
           }
           rs.close();
           statement.close();
-          connection.close();
       }
       catch(Exception e){
           throw e;
@@ -297,21 +271,18 @@ public class showyourquestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(this.connectionLink, this.user, this.pass);
           Statement statement = connection.createStatement ();
           ResultSet set = statement.executeQuery(query);
           if(set.next()){
             Member m = new Member(set.getString("name"), set.getString("password"), set.getString("email"), set.getString("phone"), set.getString("memid"), 
             set.getBoolean("isModerator"), set.getBoolean("isAdmin"), set.getBoolean("acc_blocked"), set.getInt("reputation"));
-            set.close();
+          set.close();
           statement.close();
-          connection.close();
           return m;
           }
           else{
             set.close();
             statement.close();
-            connection.close();
             return null;
           }
       }

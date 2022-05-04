@@ -18,13 +18,11 @@ public class addanswers extends JFrame implements ActionListener{
     JTextArea answer_text = new JTextArea();
     // JScrollPane answer_scroll = new JScrollPane (answer_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     JButton postanswer = new JButton("Post Answer");
-
-    addanswers(Question question, Member m, String connectionLink, String user, String pass){
+    conn connection;
+    addanswers(Question question, Member m, conn connection){
         this.question = question;
         this.m = m;
-        this.connectionLink = connectionLink;
-        this.pass = pass;
-        this.user = user;
+        this.connection = connection;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -94,14 +92,11 @@ public class addanswers extends JFrame implements ActionListener{
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-            this.connectionLink, this.user, this.pass);
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);
             statement.close();
-            connection.commit();
-            connection.close();
+            connection.c.commit();
         }
         catch(Exception e){
             throw e;

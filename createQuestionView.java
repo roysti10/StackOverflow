@@ -20,15 +20,11 @@ public class createQuestionView extends JFrame implements ActionListener {
     JScrollPane scroll = new JScrollPane (descriptionTextField,
     JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     Member member;
-    String connectionLink;
-    String user;
-    String pass;
-    createQuestionView(Question question, Member m, String connectionLink, String user, String pass) {
+    conn connection;
+    createQuestionView(Question question, Member m, conn c1) {
         this.question = question;
         this.member = m;
-        this.connectionLink =connectionLink;
-        this.pass = pass;
-        this.user = user;
+        this.connection =c1;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -92,7 +88,7 @@ public class createQuestionView extends JFrame implements ActionListener {
             System.err.println(ex);
           }
           this.setVisible(false);
-          showyourquestionView syqv = new showyourquestionView(this.question, connectionLink, user, pass);
+          showyourquestionView syqv = new showyourquestionView(this.question, connection);
           syqv.setVisible(true);
           this.dispose();
       }
@@ -109,19 +105,11 @@ public class createQuestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          this.connectionLink, this.user, this.pass);
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
-          connection.setAutoCommit(false);
+          connection.c.setAutoCommit(false);
           Statement statement = connection.createStatement ();
           statement.executeUpdate(query);
           statement.close();
-          connection.commit();
-          connection.close();
+          connection.c.commit();
       }
       catch(Exception e){
           throw e;

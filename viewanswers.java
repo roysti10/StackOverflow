@@ -4,24 +4,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.SQLException;
 
 public class viewanswers extends JFrame implements ActionListener{
     Container container = getContentPane();
     Question question;
+    conn connection;
     Member m;
     String user;
     String pass;
     String connectionLink;
     JLabel label = new JLabel("ANSWER");
     JButton button;
+    int voteType;
 
-    viewanswers(Question question, Member m, String connectionLink, String user, String pass){
+    viewanswers(Question question, Member m, conn c1){
         this.question = question;
         this.m = m;
-        this.connectionLink = connectionLink;
-        this.pass = pass;
-        this.user = user;
+        this.connection = c1;
+        
+          this.voteType  = -1;
+        
         setLayoutManager();
         setLocationAndSize();
         setTitle("View answers");
@@ -63,17 +68,20 @@ public class viewanswers extends JFrame implements ActionListener{
               @Override
               public void actionPerformed(ActionEvent e){
                 ans.incrementVoteCount();
+                voteType = 1;
                 try{
-    
-                    updateanswerVote(ans, question.questionid);
+                    updateanswerVote(ans, question.questionid, 1);
                 }
                 catch(Exception err){
                   System.err.println(err);
                 }
                 dispose();
-                new viewanswers(question, m, connectionLink, user, pass);
+                new viewanswers(question, m, connection);
               }
             });
+            if(voteType==1){
+              button.setEnabled(false);
+            }
             container.add(button);
     
             button = new JButton("DOWNVOTE");
@@ -82,15 +90,16 @@ public class viewanswers extends JFrame implements ActionListener{
               @Override
               public void actionPerformed(ActionEvent e){
                 ans.decrementVoteCount();
+                voteType=0;
                 try{
     
-                    updateanswerVote(ans, question.questionid);
+                    updateanswerVote(ans, question.questionid, 0);
                 }
                 catch(Exception err){
                   System.err.println(err);
                 }
                 dispose();
-                new viewanswers(question, m, connectionLink, user, pass);
+                new viewanswers(question, m, connection);
               }
             });
             container.add(button);
@@ -99,9 +108,8 @@ public class viewanswers extends JFrame implements ActionListener{
 
     
   
-      public void updateanswerVote(Answer com, String questionid) throws Exception {
+      public void updateanswerVote(Answer com, String questionid, int voteType) throws Exception {
         String query = "UPDATE Answers set voteCount="+com.voteCount + "where questionid=\'" + questionid+"\';";
-        System.out.println(query);
         try {
             Class.forName("org.postgresql.Driver");
         }
@@ -110,18 +118,17 @@ public class viewanswers extends JFrame implements ActionListener{
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-            this.connectionLink, this.user, this.pass);
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);
+
             statement.close();
-            connection.commit();
-            connection.close();
+            connection.c.commit();
         }
         catch(Exception e){
             throw e;
         }
   
       }
-    }
+    
+  }

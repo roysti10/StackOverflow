@@ -15,9 +15,7 @@ public class registrationView extends JFrame implements ActionListener {
 
     Container container = getContentPane();
     JLabel label = new JLabel("STACKOVERLOW");
-    String connectionLink;
-    String pass;
-    String user;
+    conn connection;
     JLabel register = new JLabel("REGISTER");
     JLabel userLabel = new JLabel("USERNAME");
     JLabel passwordLabel = new JLabel("PASSWORD");
@@ -39,10 +37,8 @@ public class registrationView extends JFrame implements ActionListener {
     JCheckBox loginShowPassword = new JCheckBox("Show Password");
 
 
-    registrationView(String connectionlink, String user, String pass) {
-        this.connectionLink = connectionlink;
-        this.user = user;
-        this.pass = pass;
+    registrationView(conn c1) {
+        this.connection = c1;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -137,7 +133,7 @@ public class registrationView extends JFrame implements ActionListener {
                 showMessage("Account already exists");
             }
             else{
-                homeView memberView = new homeView(account, connectionLink, user, pass);
+                homeView memberView = new homeView(account, connection);
                 this.setVisible(false);
                 memberView.setVisible(true);
                 this.dispose();
@@ -158,7 +154,7 @@ public class registrationView extends JFrame implements ActionListener {
                 showMessage("Your account is blocked!");
             }
             else{
-                homeView meberView = new homeView(m, connectionLink, user, pass);
+                homeView meberView = new homeView(m, connection);
                 this.setVisible(false);
                 meberView.setVisible(true);
                 this.dispose();
@@ -201,26 +197,23 @@ public class registrationView extends JFrame implements ActionListener {
               System.exit (-1);
           }
           try {
-              Connection connection = DriverManager.getConnection(
-              this.connectionLink, this.user, this.pass);
-              connection.setAutoCommit(false);
+              connection.c.setAutoCommit(false);
               Statement statement = connection.createStatement ();
               ResultSet set = statement.executeQuery(query2);
               while(set.next()){
                 return false;
               }
-              connection.createStatement();
+              statement = connection.createStatement();
               statement.executeUpdate(query);
 
-              connection.createStatement();
+              statement = connection.createStatement();
               statement.executeUpdate(query3);
 
-              connection.createStatement();
+              statement = connection.createStatement();
               statement.executeUpdate(query4);
 
               statement.close();
-              connection.commit();
-              connection.close();
+              connection.c.commit();
               return true;
           }
           catch(Exception e){
@@ -240,27 +233,23 @@ public class registrationView extends JFrame implements ActionListener {
               System.exit (-1);
           }
           try {
-              Connection connection = DriverManager.getConnection( this.connectionLink, this.user, this.pass);
-              connection.setAutoCommit(false);
+              connection.c.setAutoCommit(false);
               Statement statement = connection.createStatement ();
               ResultSet set = statement.executeQuery(query2);
               if(set.next()){
                 String memid = set.getString("memid");
                 Member m = new Member(name, pass, set.getString("email"), set.getString("phone"), memid, 
                 set.getBoolean("isModerator"), set.getBoolean("isAdmin"), set.getBoolean("acc_blocked"), set.getInt("reputation"));
-                connection.createStatement();
+                statement = connection.createStatement();
                 statement.executeUpdate(query3);
-                connection.createStatement();
+                statement = connection.createStatement();
                 statement.executeUpdate("Insert into currentmemid values(\'" + memid + "\');");
                 statement.close();
-                connection.commit();
-                connection.close();
+                connection.c.commit();
                 return m;
               }
               else{
                 statement.close();
-                connection.commit();
-                connection.close();
                 return null;
               }
             }

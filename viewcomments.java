@@ -10,18 +10,14 @@ public class viewcomments extends JFrame implements ActionListener{
     Container container = getContentPane();
     Question question;
     Member m;
-    String user;
-    String pass;
-    String connectionLink;
+    conn connection;
     JLabel label = new JLabel("Comment");
     JButton button;
 
-    viewcomments(Question question, Member m, String connectionLink, String user, String pass){
+    viewcomments(Question question, Member m, conn c1){
         this.question = question;
         this.m = m;
-        this.connectionLink = connectionLink;
-        this.pass = pass;
-        this.user = user;
+        this.connection = c1;
         setLayoutManager();
         setLocationAndSize();
         setTitle("View comments");
@@ -73,7 +69,7 @@ public class viewcomments extends JFrame implements ActionListener{
               System.err.println(err);
             }
             dispose();
-            new viewcomments(question, m, connectionLink, user, pass);
+            new viewcomments(question, m, connection);
           }
         });
         container.add(button);
@@ -92,7 +88,7 @@ public class viewcomments extends JFrame implements ActionListener{
               System.err.println(err);
             }
             dispose();
-            new viewcomments(question, m, connectionLink, user, pass);
+            new viewcomments(question, m, connection);
           }
         });
         this.add(button);
@@ -111,19 +107,11 @@ public class viewcomments extends JFrame implements ActionListener{
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-                       //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-            this.connectionLink, this.user, this.pass);
-  
-                       // build query, here we get info about all databases"
-  
-                       // execute query
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);
             statement.close();
-            connection.commit();
-            connection.close();
+            connection.c.commit();
         }
         catch(Exception e){
             throw e;
@@ -142,19 +130,11 @@ public class viewcomments extends JFrame implements ActionListener{
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-                       //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-            this.connectionLink, this.user, this.pass);
-  
-                       // build query, here we get info about all databases"
-  
-                       // execute query
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             statement.executeUpdate(query);
             statement.close();
-            connection.commit();
-            connection.close();
+            connection.c.commit();
         }
         catch(Exception e){
             throw e;

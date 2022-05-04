@@ -3,8 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -29,6 +27,7 @@ public class showAccountView extends JFrame implements ActionListener {
     String pass;
     JButton backButton = new JButton("BACK");
     Member mem;
+    conn connection;
     JLabel questionLabel = new JLabel("YOUR QUESTIONS");
     // JTextArea textArea = new JTextArea("TEST");
     // JScrollPane scroll = new JScrollPane (textArea,
@@ -36,10 +35,10 @@ public class showAccountView extends JFrame implements ActionListener {
 
 
 
-    showAccountView(Member account, String connectionLink, String user, String pass) {
-        this.connectionLink = connectionLink;
-        this.user= user;
-        this.pass = pass;
+    showAccountView(Member account, conn c1) {
+
+        this.connection = c1;
+        this.mem = account;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -56,7 +55,7 @@ public class showAccountView extends JFrame implements ActionListener {
         phoneTextField.setText(account.phone);
         reputationsTextField.setText(Integer.toString(account.reputation));
 
-        mem = account;
+        ;
         // textArea.setLineWrap(true);
         // textArea.setEditable(false);
         // textArea.setVisible(true);
@@ -139,7 +138,7 @@ public class showAccountView extends JFrame implements ActionListener {
               @Override
               public void actionPerformed(ActionEvent e){
                 dispose();
-                new showyourquestionView(qs, connectionLink, user, pass);
+                new showyourquestionView(qs, connection);
                 
               }
             });
@@ -166,7 +165,7 @@ public class showAccountView extends JFrame implements ActionListener {
         if (e.getSource() == backButton) {
           setVisible(false);
           dispose();
-          homeView hv = new homeView(mem, connectionLink, user, pass);
+          homeView hv = new homeView(mem,connection);
           hv.setVisible(true);
         }
         if (e.getSource() == showPassword) {
@@ -255,7 +254,7 @@ public class showAccountView extends JFrame implements ActionListener {
     }
 
     public ArrayList<Question> add_questions(ArrayList<Question> questions) throws Exception {
-        String query = "SELECT * FROM Question;";
+        String query = "SELECT * FROM Question where memid=\'" +mem.memid + "\';";
         //  WHERE memid=\'" + mem.memid + "\';";
         System.out.println(query);
         try {
@@ -266,9 +265,7 @@ public class showAccountView extends JFrame implements ActionListener {
             System.exit (-1);
         }
         try {
-            Connection connection = DriverManager.getConnection(
-            this.connectionLink, this.user, this.pass);
-            connection.setAutoCommit(false);
+            connection.c.setAutoCommit(false);
             Statement statement = connection.createStatement ();
             ResultSet rs = statement.executeQuery(query);
             while(rs.next()){
@@ -281,7 +278,6 @@ public class showAccountView extends JFrame implements ActionListener {
             }
             rs.close();
             statement.close();
-            connection.close();
             return questions;
         }
         catch(Exception e){
