@@ -20,6 +20,9 @@ public class showyourquestionView extends JFrame implements ActionListener {
     JTextArea descriptionField;
     JLabel name = new JLabel("Question posted by");
     JLabel nameField;
+    String connectionLink;
+    String user;
+    String pass;
     JButton AddAnswerButton = new JButton("Add Answer");
     JButton ViewAnswers = new JButton("View Answers");
     JButton ViewComments = new JButton("View Comments");
@@ -29,11 +32,15 @@ public class showyourquestionView extends JFrame implements ActionListener {
     JButton upvote = new JButton("UPVOTE");
     JButton downvote = new JButton("DOWNVOTE");
     JScrollPane scroll;
+    Member m;
 
-    showyourquestionView(Question question) {
+    showyourquestionView(Question question, String connectionLink, String user, String pass) {
 
         this.question = question;
-        Member m = null;
+        this.connectionLink = connectionLink;
+        this.user = user;
+        this.pass = pass;
+        this.m = null;
         try{
           m = this.getMember();
         }
@@ -127,237 +134,19 @@ public class showyourquestionView extends JFrame implements ActionListener {
 
     }
 
-    public void CommentFrame(){
-      JFrame comment = new JFrame("Write your comment");
-      JLabel comment_label = new JLabel("COMMENT");
-      JLabel commentdescriptionLabel = new JLabel("Comment");
-      JTextArea comment_text = new JTextArea();
-      JScrollPane comment_scroll = new JScrollPane (comment_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      JButton postcomment = new JButton("Post Comment");
-      comment_label.setFont(new Font("Serif", Font.BOLD, 28));
-      comment_label.setForeground(new java.awt.Color(255,165,0));
-      commentdescriptionLabel.setFont(new Font("Serif", Font.BOLD, 24));
-      commentdescriptionLabel.setForeground(new java.awt.Color(255,165,0));
-      comment.setLayout(null);
-      comment.setSize(600, 700);
-      comment.setVisible(true);
-      comment.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      comment.setResizable(false);
-      comment_label.setBounds(200,30,200,100);
-      comment.setLocationRelativeTo(null);
-      commentdescriptionLabel.setBounds(200, 130, 100, 100);
-      comment_scroll.setBounds(150, 170, 300, 400);
-      postcomment.setBounds(200, 120, 150, 30);
-      comment.add(comment_label);
-      comment.add(commentdescriptionLabel);
-      comment.add(comment_scroll);
-      comment.add(postcomment);
-      comment_text.setLineWrap(false);
-      comment_text.setEditable(true);
-      comment_text.setVisible(true);
-      postcomment.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Comment com = new Comment(comment_text.getText());
-            question.addComment(com);
-            try{
-              addcomment(com, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            comment.dispose();
-          }
-      });
-    }
-    public void AnswerFrame(){
-      JFrame answer = new JFrame("Write your answer");
-      JLabel answer_label = new JLabel("ANSWER");
-      JLabel answerdescriptionLabel = new JLabel("Answer");
-      JTextArea answer_text = new JTextArea();
-      JScrollPane answer_scroll = new JScrollPane (answer_text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      JButton postanswer = new JButton("Post Answer");
-      answer_label.setFont(new Font("Serif", Font.BOLD, 28));
-      answer_label.setForeground(new java.awt.Color(255,165,0));
-      answerdescriptionLabel.setFont(new Font("Serif", Font.BOLD, 24));
-      answerdescriptionLabel.setForeground(new java.awt.Color(255,165,0));
-      answer.setLayout(null);
-      answer.setSize(600, 700);
-      answer.setVisible(true);
-      answer.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      answer.setResizable(false);
-      answer.setLocationRelativeTo(null);
-      answer_label.setBounds(200,30,200,100);
-      answerdescriptionLabel.setBounds(200, 130, 100, 100);
-      answer_scroll.setBounds(150, 170, 300, 400);
-      postanswer.setBounds(200, 120, 150, 30);
-      answer.add(answer_label);
-      answer.add(answerdescriptionLabel);
-      answer.add(answer_scroll);
-      answer.add(postanswer);
-      answer_text.setLineWrap(false);
-      answer_text.setEditable(true);
-      answer_text.setVisible(true);
-      postanswer.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Answer ans = new Answer(answer_text.getText());
-            question.addAnswer(ans);
-            try{
-              addanswer(ans, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            answer.dispose();
-          }
-      });
-  }
-
-
-    public void ViewCommentFrame(){
-      JFrame frame = new JFrame();
-      JLabel label = new JLabel("COMMENT");
-
-      label.setFont(new Font("Serif", Font.BOLD, 28));
-      label.setForeground(new java.awt.Color(255,165,0));
-      label.setBounds(200,30,300,50);
-      frame.add(label);
-      JButton button;
-
-      for(int i=0;i<question.comments.size();i++){
-        System.out.println("Hi");
-        JLabel comment = new JLabel(question.comments.get(i).text);
-        comment.setBounds(200,100,200,30);
-        frame.add(comment);
-        JLabel vote = new JLabel(Integer.toString(question.comments.get(i).voteCount));
-        vote.setBounds(250,200,50,30);
-        frame.add(vote);
-
-        Comment ans = question.comments.get(i);
-        button = new JButton("UPVOTE");
-        button.setBounds(100,300,100,30);
-        button.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e){
-            ans.incrementVoteCount();
-            try{
-
-                updatecommentVote(ans, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            frame.dispose();
-            ViewCommentFrame();
-          }
-        });
-        frame.add(button);
-
-        button = new JButton("DOWNVOTE");
-        button.setBounds(300,300,150,30);
-        button.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e){
-            ans.decrementVoteCount();
-            try{
-
-                updatecommentVote(ans, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            frame.dispose();
-            ViewCommentFrame();
-          }
-        });
-        frame.add(button);
-        }
-      frame.setLayout(null);
-      frame.setSize(600, 500);
-      frame.setVisible(true);
-      frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      frame.setResizable(false);
-    }
-
-    public void ViewAnswerFrame(){
-      JFrame frame = new JFrame();
-      JLabel label = new JLabel("ANSWER");
-
-      label.setFont(new Font("Serif", Font.BOLD, 28));
-      label.setForeground(new java.awt.Color(255,165,0));
-      label.setBounds(200,30,300,50);
-      frame.add(label);
-      JButton button;
-
-      for(int i=0;i<question.answers.size();i++){
-        System.out.println(question.answers.get(i).answer_text);
-        JLabel comment = new JLabel(question.answers.get(i).answer_text);
-        comment.setBounds(200,100,200,30);
-        frame.add(comment);
-        JLabel vote = new JLabel(Integer.toString(question.answers.get(i).voteCount));
-        vote.setBounds(250,200,50,30);
-        frame.add(vote);
-
-        Answer ans = question.answers.get(i);
-        button = new JButton("UPVOTE");
-        button.setBounds(100,300,100,30);
-        button.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e){
-            ans.incrementVoteCount();
-            try{
-
-                updateanswerVote(ans, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            frame.dispose();
-            ViewAnswerFrame();
-          }
-        });
-        frame.add(button);
-
-        button = new JButton("DOWNVOTE");
-        button.setBounds(300,300,150,30);
-        button.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e){
-            ans.decrementVoteCount();
-            try{
-
-                updateanswerVote(ans, question.questionid);
-            }
-            catch(Exception err){
-              System.err.println(err);
-            }
-            frame.dispose();
-            ViewAnswerFrame();
-          }
-        });
-        frame.add(button);
-        }
-      frame.setLayout(null);
-      frame.setSize(600, 500);
-      frame.setVisible(true);
-      frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      frame.setResizable(false);
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
       if(e.getSource()== AddAnswerButton){
-        AnswerFrame();
+        new addanswers(question, m, connectionLink, user, pass);
       }
       if(e.getSource()==AddCommentButton){
-        CommentFrame();
+        new addcomments(question, m, connectionLink, user, pass);
       }
       if(e.getSource()==ViewAnswers){
-        ViewAnswerFrame();
+        new viewanswers(question, m, connectionLink, user, pass);
       }
       if(e.getSource()==ViewComments){
-        ViewCommentFrame();
+        new viewcomments(question, m, connectionLink, user, pass);
       }
       if(e.getSource()==backButton){
         setVisible(false);
@@ -386,40 +175,8 @@ public class showyourquestionView extends JFrame implements ActionListener {
       }
     }
 
-
-    public void addanswer(Answer ans, String questionid) throws Exception {
-      String query = "INSERT INTO Answers VALUES (\'" + questionid + "\',\'"+ans.answer_text +"\'," + ans.voteCount +");";
-      System.out.println(query);
-      try {
-          Class.forName("org.postgresql.Driver");
-      }
-      catch (ClassNotFoundException e) {
-          System.err.println (e);
-          System.exit (-1);
-      }
-      try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
-          connection.setAutoCommit(false);
-          Statement statement = connection.createStatement ();
-          statement.executeUpdate(query);
-          statement.close();
-          connection.commit();
-          connection.close();
-      }
-      catch(Exception e){
-          throw e;
-      }
-
-    }
-
     public void updatequestionVote(Question q, int voteType) throws Exception {
-      String query = "UPDATE question set votecount="+q.voteCount + " where questionid=" + q.questionid + ";";
+      String query = "UPDATE question set votecount="+q.voteCount + " where questionid=\'" + q.questionid + "\';";
       String query2;
       if(voteType == 1){
         query2 = "Insert into Vote values(\'"+q.questionid+"\',\'"+q.memid+"\'," + true+");";
@@ -438,7 +195,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       try {
           Connection connection = DriverManager.getConnection(
                      //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          this.connectionLink, this.user, this.pass);
 
                      // build query, here we get info about all databases"
 
@@ -462,99 +219,6 @@ public class showyourquestionView extends JFrame implements ActionListener {
 
     }
 
-    public void updatecommentVote(Comment com, String questionid) throws Exception {
-      String query = "UPDATE Comments set voteCount="+com.voteCount + "where questionid=" + questionid+";";
-      System.out.println(query);
-      try {
-          Class.forName("org.postgresql.Driver");
-      }
-      catch (ClassNotFoundException e) {
-          System.err.println (e);
-          System.exit (-1);
-      }
-      try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
-          connection.setAutoCommit(false);
-          Statement statement = connection.createStatement ();
-          statement.executeUpdate(query);
-          statement.close();
-          connection.commit();
-          connection.close();
-      }
-      catch(Exception e){
-          throw e;
-      }
-
-    }
-
-    public void updateanswerVote(Answer com, String questionid) throws Exception {
-      String query = "UPDATE Answers set voteCount="+com.voteCount + "where questionid=\'" + questionid+"\';";
-      System.out.println(query);
-      try {
-          Class.forName("org.postgresql.Driver");
-      }
-      catch (ClassNotFoundException e) {
-          System.err.println (e);
-          System.exit (-1);
-      }
-      try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
-          connection.setAutoCommit(false);
-          Statement statement = connection.createStatement ();
-          statement.executeUpdate(query);
-          statement.close();
-          connection.commit();
-          connection.close();
-      }
-      catch(Exception e){
-          throw e;
-      }
-
-    }
-
-    public void addcomment(Comment com, String questionid) throws Exception {
-      String query = "INSERT INTO Comments VALUES (\'" + questionid + "\',\'"+com.text +"\'," + com.voteCount + ");";
-      System.out.println(query);
-      try {
-          Class.forName("org.postgresql.Driver");
-      }
-      catch (ClassNotFoundException e) {
-          System.err.println (e);
-          System.exit (-1);
-      }
-      try {
-          Connection connection = DriverManager.getConnection(
-                     //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
-
-                     // build query, here we get info about all databases"
-
-                     // execute query
-          connection.setAutoCommit(false);
-          Statement statement = connection.createStatement ();
-          statement.executeUpdate(query);
-          statement.close();
-          connection.commit();
-          connection.close();
-      }
-      catch(Exception e){
-          throw e;
-      }
-
-    }
-
     public void getanswer() throws Exception {
       String query = "SELECT * FROM Answers WHERE questionid=\'"+question.questionid+"\';";
       System.out.println(query);
@@ -568,7 +232,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       try {
           Connection connection = DriverManager.getConnection(
                      //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          this.connectionLink, this.user, this.pass);
 
                      // build query, here we get info about all databases"
 
@@ -576,7 +240,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
-            this.question.addAnswer(new Answer(rs.getString("answer_text"), rs.getInt("vote_count")));
+            this.question.addAnswer(new Answer(rs.getString("answer_text"), rs.getInt("votecount")));
           }
           rs.close();
           statement.close();
@@ -601,7 +265,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
       try {
           Connection connection = DriverManager.getConnection(
                      //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          this.connectionLink, this.user, this.pass);
 
                      // build query, here we get info about all databases"
 
@@ -609,7 +273,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
           Statement statement = connection.createStatement ();
           ResultSet rs = statement.executeQuery(query);
           while(rs.next()){
-            this.question.addComment(new Comment(rs.getString("comment_text"), rs.getInt("vote_count")));
+            this.question.addComment(new Comment(rs.getString("text"), rs.getInt("votecount")));
           }
           rs.close();
           statement.close();
@@ -632,7 +296,7 @@ public class showyourquestionView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-          Connection connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          Connection connection = DriverManager.getConnection(this.connectionLink, this.user, this.pass);
           Statement statement = connection.createStatement ();
           ResultSet set = statement.executeQuery(query);
           if(set.next()){

@@ -22,9 +22,15 @@ public class createQuestionView extends JFrame implements ActionListener {
     JScrollPane scroll = new JScrollPane (descriptionTextField,
     JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     Member member;
-    createQuestionView(Question question, Member m) {
+    String connectionLink;
+    String user;
+    String pass;
+    createQuestionView(Question question, Member m, String connectionLink, String user, String pass) {
         this.question = question;
         this.member = m;
+        this.connectionLink =connectionLink;
+        this.pass = pass;
+        this.user = user;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -88,7 +94,7 @@ public class createQuestionView extends JFrame implements ActionListener {
             System.err.println(ex);
           }
           this.setVisible(false);
-          showyourquestionView syqv = new showyourquestionView(this.question);
+          showyourquestionView syqv = new showyourquestionView(this.question, connectionLink, user, pass);
           syqv.setVisible(true);
           this.dispose();
       }
@@ -107,7 +113,7 @@ public class createQuestionView extends JFrame implements ActionListener {
       try {
           Connection connection = DriverManager.getConnection(
                      //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          this.connectionLink, this.user, this.pass);
 
                      // build query, here we get info about all databases"
 

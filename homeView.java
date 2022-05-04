@@ -16,13 +16,19 @@ public class homeView extends JFrame implements ActionListener {
     JPanel pnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
     JLabel label = new JLabel("STACKOVERFLOW");
     Member m1;
+    String connectionLink;
+    String user;
+    String pass;
     JTextArea textArea = new JTextArea();
     JScrollPane scroll = new JScrollPane(pnl, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     JButton membverView = new JButton("MEMBER");
     JButton createQuestion = new JButton("Create question");
     JButton logout = new JButton("LOGOUT");
     JButton listMembers = new JButton("LIST MEMBERS");
-    homeView(Member member){
+    homeView(Member member, String connectionLink, String user, String pass){
+        this.user = user;
+        this.connectionLink = connectionLink;
+        this.pass = pass;
         m1 = member;
         setLayoutManager();
         setLocationAndSize();
@@ -101,7 +107,7 @@ public class homeView extends JFrame implements ActionListener {
               @Override
               public void actionPerformed(ActionEvent e){
 
-                showyourquestionView syqv = new showyourquestionView(qs);
+                showyourquestionView syqv = new showyourquestionView(qs, connectionLink, user, pass);
               }
             });
         }
@@ -127,11 +133,11 @@ public class homeView extends JFrame implements ActionListener {
             // System.out.println("Member View");
             setVisible(false);
             dispose();
-            showAccountView sav = new showAccountView(m1);
+            showAccountView sav = new showAccountView(m1, connectionLink, user, pass);
             sav.setVisible(true);
         }
         if(e.getSource()==createQuestion){
-          createQuestionView cqv = new createQuestionView(new Question("", ""), m1);
+          createQuestionView cqv = new createQuestionView(new Question("", ""), m1, connectionLink, user, pass);
         }
         if(e.getSource()==logout){
           this.setVisible(false);
@@ -142,7 +148,7 @@ public class homeView extends JFrame implements ActionListener {
           catch(Exception err){
             System.err.println(err);
           }
-            new registrationView();
+            new registrationView(connectionLink, user, pass);
         }
     }
 
@@ -159,7 +165,7 @@ public class homeView extends JFrame implements ActionListener {
       try {
           Connection connection = DriverManager.getConnection(
                      //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-          "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+          this.connectionLink, this.user, this.pass);
 
                      // build query, here we get info about all databases"
 
@@ -197,7 +203,7 @@ public class homeView extends JFrame implements ActionListener {
           System.exit (-1);
       }
       try {
-        Connection connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+        Connection connection = DriverManager.getConnection(this.connectionLink, this.user, this.pass);
         connection.setAutoCommit(false);
         Statement statement = connection.createStatement ();
         statement.executeUpdate(query);

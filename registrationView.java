@@ -16,7 +16,9 @@ public class registrationView extends JFrame implements ActionListener {
 
     Container container = getContentPane();
     JLabel label = new JLabel("STACKOVERLOW");
-
+    String connectionLink;
+    String pass;
+    String user;
     JLabel register = new JLabel("REGISTER");
     JLabel userLabel = new JLabel("USERNAME");
     JLabel passwordLabel = new JLabel("PASSWORD");
@@ -38,7 +40,10 @@ public class registrationView extends JFrame implements ActionListener {
     JCheckBox loginShowPassword = new JCheckBox("Show Password");
 
 
-    registrationView() {
+    registrationView(String connectionlink, String user, String pass) {
+        this.connectionLink = connectionlink;
+        this.user = user;
+        this.pass = pass;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -133,7 +138,7 @@ public class registrationView extends JFrame implements ActionListener {
                 showMessage("Account already exists");
             }
             else{
-                homeView memberView = new homeView(account);
+                homeView memberView = new homeView(account, connectionLink, user, pass);
                 this.setVisible(false);
                 memberView.setVisible(true);
                 this.dispose();
@@ -154,7 +159,7 @@ public class registrationView extends JFrame implements ActionListener {
                 showMessage("Your account is blocked!");
             }
             else{
-                homeView meberView = new homeView(m);
+                homeView meberView = new homeView(m, connectionLink, user, pass);
                 this.setVisible(false);
                 meberView.setVisible(true);
                 this.dispose();
@@ -199,7 +204,7 @@ public class registrationView extends JFrame implements ActionListener {
           try {
               Connection connection = DriverManager.getConnection(
                          //"jdbc:postgresql://dbhost:port/dbname", "user", "dbpass");
-              "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+              this.connectionLink, this.user, this.pass);
 
                          // build query, here we get info about all databases"
 
@@ -241,7 +246,7 @@ public class registrationView extends JFrame implements ActionListener {
               System.exit (-1);
           }
           try {
-              Connection connection = DriverManager.getConnection( "jdbc:postgresql://127.0.0.1:5433/stackoverflow", "postgres", "postgres");
+              Connection connection = DriverManager.getConnection( this.connectionLink, this.user, this.pass);
               connection.setAutoCommit(false);
               Statement statement = connection.createStatement ();
               ResultSet set = statement.executeQuery(query2);

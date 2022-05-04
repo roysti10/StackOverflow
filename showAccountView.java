@@ -24,7 +24,9 @@ public class showAccountView extends JFrame implements ActionListener {
     JButton updateButton = new JButton("UPDATE");
     JButton resetButton = new JButton("RESET PASSWORD");
     JCheckBox showPassword = new JCheckBox("Show Password");
-
+    String connectionLink;
+    String user;
+    String pass;
     JButton backButton = new JButton("BACK");
     Member mem;
    //  JLabel questionLabel = new JLabel("YOUR QUESTIONS");
@@ -34,7 +36,10 @@ public class showAccountView extends JFrame implements ActionListener {
 
 
 
-    showAccountView(Member account) {
+    showAccountView(Member account, String connectionLink, String user, String pass) {
+        this.connectionLink = connectionLink;
+        this.user= user;
+        this.pass = pass;
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
@@ -118,7 +123,7 @@ public class showAccountView extends JFrame implements ActionListener {
         if (e.getSource() == backButton) {
           setVisible(false);
           dispose();
-          homeView hv = new homeView(mem);
+          homeView hv = new homeView(mem, connectionLink, user, pass);
           hv.setVisible(true);
         }
         if (e.getSource() == showPassword) {
